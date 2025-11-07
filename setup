@@ -60,7 +60,7 @@ declare -A MACOS_CONFIG=(
   ["6"]="Ventura|13|Mac-B4831CEBD52A0C4C|00000000000000000|1024M|virtio0"
   ["7"]="Sonoma|14|Mac-827FAC58A8FDFA22|00000000000000000|1450M|virtio0"
   ["8"]="Sequoia|15|Mac-7BA5B2D9E42DDD94|00000000000000000|1450M|virtio0"
-  ["9"]="Tahoe|26|Mac-CFF7D910A743CAAF|00000000000000000 -os latest download
+  ["9"]="Tahoe|26|Mac-CFF7D910A743CAAF|00000000000000000|1500M|virtio0"
 )
 
 # Display and log function
@@ -379,7 +379,7 @@ download_recovery_image() {
   mount "$loopdev" /mnt/APPLE >>"$logfile" 2>&1 || log_and_exit "Failed to mount image" "$logfile"
   cd /mnt/APPLE
   local recovery_args="-b $board_id -m $model_id download"
-  [[ "$version_name" == "Sequoia" ]] && recovery_args="$recovery_args -os latest"
+  [[ "$version_name" == "Sequoia" || "$version_name" == "Tahoe" ]] && recovery_args="$recovery_args -os latest"
   python3 "${SCRIPT_DIR}/tools/macrecovery/macrecovery.py" $recovery_args >>"$logfile" 2>&1 || log_and_exit "Failed to download recovery" "$logfile"
   cd "$SCRIPT_DIR"
   umount /mnt/APPLE >>"$logfile" 2>&1 || log_and_exit "Failed to unmount image" "$logfile"
