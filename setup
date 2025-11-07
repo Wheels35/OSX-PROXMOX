@@ -400,13 +400,13 @@ create_vm() {
   [[ ! -d "/sys/class/net/$bridge" ]] && log_and_exit "Bridge $bridge does not exist" "$logfile"
 
   local cpu_args device_args='-device isa-applesmc,osk="ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc" -smbios type=2'
-  if [[ "$version_name" =~ ^(Sonoma|Sequoia)$ ]]; then
+  if [[ "$version_name" =~ ^(Sonoma|Sequoia|Tahoe)$ ]]; then
     device_args="$device_args -device qemu-xhci -device usb-kbd -device usb-tablet -global nec-usb-xhci.msi=off"
   else
     device_args="$device_args -device usb-kbd,bus=ehci.0,port=2 -device usb-mouse,bus=ehci.0,port=3"
   fi
   if [[ "$OSX_PLATFORM" == "AMD" ]]; then
-    if [[ "$version_name" =~ ^(Ventura|Sonoma|Sequoia)$ ]]; then
+    if [[ "$version_name" =~ ^(Ventura|Sonoma|Sequoia|Tahoe)$ ]]; then
       cpu_args="-cpu Cascadelake-Server,vendor=GenuineIntel,+invtsc,-pcid,-hle,-rtm,-avx512f,-avx512dq,-avx512cd,-avx512bw,-avx512vl,-avx512vnni,kvm=on,vmware-cpuid-freq=on"
     else
       cpu_args="-cpu Penryn,kvm=on,vendor=GenuineIntel,+kvm_pv_unhalt,+kvm_pv_eoi,+hypervisor,+invtsc,+ssse3,+sse4.2,+popcnt,+avx,+avx2,+aes,+fma,+bmi1,+bmi2,+xsave,+xsaveopt,check"
@@ -1417,7 +1417,7 @@ main_menu() {
       echo "$version|$key"
     done | sort -t'|' -k1,1V | cut -d'|' -f2); do
       IFS='|' read -r name version _ _ _ _ <<< "${MACOS_CONFIG[$i]}"
-      [[ "$name" == "Sequoia" ]] && display_name="macOS Sequoia" || display_name="$name"
+      [[ "$name" == "Sequoia" ]] && display_name="macOS Sequoia" || [[ "$name" == "Tahoe" ]] && display_name="macOS Tahoe" || display_name="$name"
       echo " $i - $display_name - $version"
     done
     echo
